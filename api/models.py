@@ -86,6 +86,8 @@ class Employees(models.Model):
     photopath = models.CharField(db_column='PhotoPath', max_length=255, blank=True, null=True)  # Field name made lowercase.
     salary = models.FloatField(db_column='Salary', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.firstname + " " + self.lastname + " - " + str(self.birthdate)
     class Meta:
         managed = False
         db_table = 'Employees'
@@ -119,7 +121,8 @@ class Orders(models.Model):
     shipregion = models.CharField(db_column='ShipRegion', max_length=15, blank=True, null=True)  # Field name made lowercase.
     shippostalcode = models.CharField(db_column='ShipPostalCode', max_length=10, blank=True, null=True)  # Field name made lowercase.
     shipcountry = models.CharField(db_column='ShipCountry', max_length=15, blank=True, null=True)  # Field name made lowercase.
-
+    def __str__(self):
+        return f"{self.orderid} - {self.customerid}"
     class Meta:
         managed = False
         db_table = 'Orders'
