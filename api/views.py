@@ -296,20 +296,55 @@ def get_orders_with_details(request):
 
 @api_view(["GET"])
 def punto1(request):
-    letra = request.query_params.get("letter")
-    year = request.query_params.get("year")
 
-    empleadosFiltrados = Employees.objects.filter(firstname__icontains = letra)
+    supplierid = request.query_params.get("supplierid")
+    categoryid = request.query_params.get("categoryid")
+    stockmin = request.query_params.get("stockmin")
+    productosFiltrados = Products.objects.filter(supplierid  = supplierid, categoryid = categoryid)
     resultados = []
-    for e in empleadosFiltrados:
-        resultado = {
-            "id" : e.employeeid,
-            "nombre" : e.firstname,
-            "apellido" : e.lastname,
-            "birthdate" : e.birthdate
-        }
-        if e.birthdate.year >= int(year):
+    if not productosFiltrados:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    for p in productosFiltrados:
+        suma = p.unitsinstock + p.unitsonorder
+        if suma < int(stockmin) and p.discontinued != 1:
+            resultado = {
+                "ProductId" : p.productid,
+                "ProductName" : p.productname,
+                "StockFuturo" : f"{suma} - ${p.unitprice}"
+            }
             resultados.append(resultado)
-    serializados = Punto1Serializer(resultados, many=True)
-    return Response(serializados.data)
+    if not resultados:
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
+    productoSerializer = ProductoSerializer(resultados, many=True)
+    return Response(productoSerializer.data, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def punto2(request):
+    supplierid = request.data["supplierid"]
+    categoryid = request.data["categoryid"]
+    requiredStock = request.data["requiredStock"]
+    customerid = request.data["customerid"]
+    employeeid = request.data["employeeid"]
+    
+    products = Products.objects.filter(supplierid = supplierid, categoryid = categoryid)
+        
+    order = {
+        "customerid" : customerid,
+        "employeeid" : employeeid,
+    }
+    orderDetails = []
+    for p in products:
+        suma = p.unitsinstock + p.unitsonorder
+        if suma < requiredStock:
+            orderDetail = {
+                "productid" : p.productid,
+                "unitprice" : p.unitprice,
+                "quantity" : p.calcularDiferenciaDeStock(requiredStock)
+    
+            }
+            if orderDetail["quantity"] <= 100:
+                orderDetail["discont"] = 0
+            else:
+                orderDetail["discont"] = 0.1
+    return Response({"todo": "ok"})

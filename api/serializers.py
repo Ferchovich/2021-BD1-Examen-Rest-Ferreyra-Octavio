@@ -46,15 +46,31 @@ class EmployeeSerializer (SerializadorPadre):
       model = Employees
       fields = '__all__'
 
-class Punto1Serializer(serializers.Serializer):
-   id = serializers.IntegerField()
-   apellido = serializers.CharField()
-   nombre = serializers.CharField()
-   birthdate = serializers.DateTimeField()
-   
 #class Punto1Serializer(serializers.Serializer):
-#    id = serializers.IntegerField()
-#    apellido = serializers.CharField(max_length=50)
-#    descripcion = CondicionIvaSerializer(many=False)
-#    telefono = serializers.IntegerField()
-#    nuevoTelefono = serializers.IntegerField()
+#   id = serializers.IntegerField()
+#   apellido = serializers.CharField()
+#   nombre = serializers.CharField()
+#   birthdate = serializers.DateTimeField()
+#@api_view(["GET"])
+#def punto1(request):
+#    letra = request.query_params.get("letter")
+#    year = request.query_params.get("year")
+#
+#    empleadosFiltrados = Employees.objects.filter(firstname__icontains = letra)
+#    resultados = []
+#    for e in empleadosFiltrados:
+#        resultado = {
+#            "id" : e.employeeid,
+#            "nombre" : e.firstname,
+#            "apellido" : e.lastname,
+#            "birthdate" : e.birthdate
+#        }
+#        if e.birthdate.year >= int(year):
+#            resultados.append(resultado)
+#    serializados = Punto1Serializer(resultados, many=True)
+#    return Response(serializados.data)   
+
+class ProductoSerializer(serializers.Serializer):
+   ProductId = serializers.IntegerField()
+   ProductName = serializers.CharField()
+   StockFuturo = serializers.CharField()

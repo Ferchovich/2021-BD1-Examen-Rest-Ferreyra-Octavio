@@ -23,6 +23,7 @@ urlpatterns = [
     path("employees/", getAllEmployees, name="getAllEmployees"),
     path("employees/<str:pk>/", getEmployeeById, name="getEmployeeById"),
 
-    path("punto1/", punto1)
+    path("productos/", punto1),
+    path("orders/", punto2)
     
 ]
